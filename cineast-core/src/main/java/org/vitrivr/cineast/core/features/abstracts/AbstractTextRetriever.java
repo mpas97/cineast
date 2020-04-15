@@ -146,6 +146,10 @@ public abstract class AbstractTextRetriever implements Retriever, Extractor {
     return this.getSimilar(qc, terms);
   }
 
+  public List<Map<String, PrimitiveTypeProvider>> getAll() {
+    return selector.getAll();
+  }
+
   /**
    * Generate a query term which will then be used for retrieval.
    */

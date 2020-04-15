@@ -3,6 +3,7 @@ package org.vitrivr.cineast.core.features.abstracts;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -130,6 +131,10 @@ public abstract class AbstractFeatureModule implements Extractor, Retriever {
         List<SegmentDistanceElement> distances = this.selector.getNearestNeighboursGeneric(qc.getResultsPerModule(), queryProvider, "feature", SegmentDistanceElement.class, qcc);
         CorrespondenceFunction function = qcc.getCorrespondenceFunction().orElse(correspondence);
         return DistanceElement.toScore(distances, function);
+    }
+
+    public List<Map<String, PrimitiveTypeProvider>> getAll() {
+        return selector.getAll();
     }
 
     @Override
