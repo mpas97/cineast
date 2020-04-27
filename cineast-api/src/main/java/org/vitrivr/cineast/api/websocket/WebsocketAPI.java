@@ -53,6 +53,9 @@ public class WebsocketAPI {
         STATELESS_HANDLERS.put(MessageType.Q_SEG, new SegmentQueryMessageHandler());
         STATELESS_HANDLERS.put(MessageType.PING, new StatusMessageHandler());
         STATELESS_HANDLERS.put(MessageType.M_LOOKUP, new MetadataLookupMessageHandler());
+        STATELESS_HANDLERS.put(MessageType.Q_SOM_TRAIN, new SomTrainQueryMessageHandler());
+        STATELESS_HANDLERS.put(MessageType.Q_SOM_UPDATE, new SomUpdateQueryMessageHandler());
+        STATELESS_HANDLERS.put(MessageType.Q_SOM_CLUSTER, new SomClusterQueryMessageHandler());
     }
 
     /* */

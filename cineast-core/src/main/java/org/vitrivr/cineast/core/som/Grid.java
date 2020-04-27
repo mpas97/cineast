@@ -1,4 +1,4 @@
-package org.vitrivr.cineast.core.util.som;
+package org.vitrivr.cineast.core.som;
 
 // code base from https://github.com/dashaub/kohonen4j
 
@@ -22,7 +22,7 @@ package org.vitrivr.cineast.core.util.som;
  * 
  * 
  * This class contains methods for representing
- * non-jagged, rectancular data arrays. Useful
+ * non-jagged, rectangular data arrays. Useful
  * methods such as mean, variance, and transpose
  * are defined. Since input validation is specific
  * for the Kohonen application, error handling and 
@@ -118,7 +118,7 @@ public class Grid
 	
 	
 	/**
-	 * Calculuate the variance of an array
+	 * Calculate the variance of an array
 	 * This method returns the variance of 
 	 * an input array. A sample-size correction
 	 * is not used.
@@ -225,7 +225,7 @@ public class Grid
 	
 	
 	/**
-	 * Calculuate the pair-wise distances
+	 * Calculate the pair-wise distances
 	 * between all points on the output Kohonen
 	 * grid. The maximum, rectilinear distance
 	 * is used with a rectangular geometry grid.
@@ -235,7 +235,7 @@ public class Grid
 	 * pair in the implicit argument Grid to all of the other
 	 * points. The second row of the output Grid similarly
 	 * contains the distances to all the other points from
-	 * the second point in the implicit argumetn Grid, etc.
+	 * the second point in the implicit argument Grid, etc.
 	 * 
 	 * @return A grid object representing the pairwise
 	 * distances
@@ -262,7 +262,7 @@ public class Grid
 					 distances[i][j] = Math.max(xDist, yDist);
 				 }
 			 }
-		 } 
+		 }
 		 return new Grid(distances);
 	 }
 	 

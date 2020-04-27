@@ -137,6 +137,10 @@ public abstract class AbstractFeatureModule implements Extractor, Retriever {
         return selector.getAll();
     }
 
+    public List<Map<String,PrimitiveTypeProvider>> getRows(List<String> ids) {
+        return this.selector.getRows("id", ids);
+    }
+
     @Override
     public void finish() {
         if (this.writer != null) {
