@@ -28,7 +28,7 @@ public enum MessageType {
   /* SOM */
   Q_SOM_TRAIN(SomTrainQuery.class),
   Q_SOM_UPDATE(SomUpdateQuery.class),
-  Q_SOM_CLUSTER(SomClusterQuery.class), QR_SOM_CLUSTER(SomClusterQueryResult.class),
+  Q_SOM_CLUSTER(SomClusterQuery.class),
 
   /* Session */
   SESSION_START(StartSessionMessage.class),

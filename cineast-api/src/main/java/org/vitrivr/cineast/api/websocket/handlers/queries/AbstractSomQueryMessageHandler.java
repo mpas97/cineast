@@ -6,7 +6,6 @@ import org.vitrivr.cineast.api.messages.result.MediaObjectQueryResult;
 import org.vitrivr.cineast.api.messages.result.MediaSegmentQueryResult;
 import org.vitrivr.cineast.api.messages.result.MediaSegmentQueryResult.SEGMENT_TYPE;
 import org.vitrivr.cineast.api.messages.result.SimilarityQueryResult;
-import org.vitrivr.cineast.api.messages.result.SomClusterQueryResult;
 import org.vitrivr.cineast.core.data.StringDoublePair;
 import org.vitrivr.cineast.core.data.entities.MediaObjectDescriptor;
 import org.vitrivr.cineast.core.data.entities.MediaSegmentDescriptor;
@@ -59,7 +58,6 @@ public abstract class AbstractSomQueryMessageHandler<T extends Query> extends Ab
             }
 
             /* Write segments, objects and cluster data to stream. */
-            this.write(session, new SomClusterQueryResult(queryId));
             this.write(session, new MediaObjectQueryResult(queryId, objects));
             this.write(session, new MediaSegmentQueryResult(queryId, segments, SEGMENT_TYPE.SOM_CLUSTER));
 
