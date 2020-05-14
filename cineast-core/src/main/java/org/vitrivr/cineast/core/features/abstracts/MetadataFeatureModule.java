@@ -71,7 +71,7 @@ public abstract class MetadataFeatureModule<T extends ReadableFloatVector>
   public abstract Optional<T> extractFeature(SegmentContainer segmentContainer);
 
   @Override
-  public void initalizePersistentLayer(Supplier<EntityCreator> supply) {
+  public void initializePersistentLayer(Supplier<EntityCreator> supply) {
     supply.get().createFeatureEntity(this.featureEntityName(), true, this.vectorLength, FEATURE_COLUMN_NAME);
   }
 

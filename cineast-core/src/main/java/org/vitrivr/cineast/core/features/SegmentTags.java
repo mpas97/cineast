@@ -52,7 +52,7 @@ public class SegmentTags implements Extractor, Retriever {
   }
 
   @Override
-  public void initalizePersistentLayer(Supplier<EntityCreator> supply) {
+  public void initializePersistentLayer(Supplier<EntityCreator> supply) {
     supply.get().createIdEntity(SEGMENT_TAGS_TABLE_NAME,
         new AttributeDefinition("tagid", AttributeType.STRING),
         new AttributeDefinition("score", AttributeType.FLOAT));

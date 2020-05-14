@@ -100,7 +100,7 @@ public abstract class BooleanRetriever implements Retriever {
   }
 
   @Override
-  public void initalizePersistentLayer(Supplier<EntityCreator> supply) {
+  public void initializePersistentLayer(Supplier<EntityCreator> supply) {
     //nop
   }
 

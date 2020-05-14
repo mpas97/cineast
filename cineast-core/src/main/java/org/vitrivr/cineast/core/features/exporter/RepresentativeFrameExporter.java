@@ -81,7 +81,7 @@ public class RepresentativeFrameExporter implements Extractor {
 	}
 
 	@Override
-	public void initalizePersistentLayer(Supplier<EntityCreator> supply) {
+	public void initializePersistentLayer(Supplier<EntityCreator> supply) {
 		supply.get().createIdEntity("cineast_representativeframes", new AttributeDefinition("frame", AttributeType.INT));
 	}
 

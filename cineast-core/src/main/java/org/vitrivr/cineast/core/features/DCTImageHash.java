@@ -145,7 +145,7 @@ public class DCTImageHash extends AbstractFeatureModule {
   }
 
   @Override
-  public void initalizePersistentLayer(Supplier<EntityCreator> supply) {
+  public void initializePersistentLayer(Supplier<EntityCreator> supply) {
     supply.get().createEntity(this.tableName,
           new AttributeDefinition("id", AttributeDefinition.AttributeType.STRING),
           new AttributeDefinition("feature", AttributeType.BITSET, 64)

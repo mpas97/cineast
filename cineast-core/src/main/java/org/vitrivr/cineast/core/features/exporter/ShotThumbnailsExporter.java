@@ -95,7 +95,7 @@ public class ShotThumbnailsExporter implements Extractor {
 	public void finish() { /* Nothing to finish. */ }
 	
 	@Override
-	public void initalizePersistentLayer(Supplier<EntityCreator> supply) { /* Nothing to init. */ }
+	public void initializePersistentLayer(Supplier<EntityCreator> supply) { /* Nothing to init. */ }
 
 	@Override
 	public void dropPersistentLayer(Supplier<EntityCreator> supply) { /* Nothing to drop. */ }

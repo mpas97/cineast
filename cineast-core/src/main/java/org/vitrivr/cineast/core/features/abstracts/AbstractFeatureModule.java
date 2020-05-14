@@ -160,7 +160,7 @@ public abstract class AbstractFeatureModule implements Extractor, Retriever {
     }
 
     @Override
-    public void initalizePersistentLayer(Supplier<EntityCreator> supply) {
+    public void initializePersistentLayer(Supplier<EntityCreator> supply) {
         supply.get().createFeatureEntity(this.tableName, true, this.vectorLength);
     }
 

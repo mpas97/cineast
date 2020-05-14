@@ -25,7 +25,7 @@ public class MedianColorRaster extends AverageColorRaster {
 	}
 	
 	@Override
-	public void initalizePersistentLayer(Supplier<EntityCreator> supply) {
+	public void initializePersistentLayer(Supplier<EntityCreator> supply) {
 		supply.get().createFeatureEntity("features_MedianColorRaster", true, new AttributeDefinition("hist", AttributeType.VECTOR, 15), new AttributeDefinition("raster", AttributeType.VECTOR, 64));
 	}
 	

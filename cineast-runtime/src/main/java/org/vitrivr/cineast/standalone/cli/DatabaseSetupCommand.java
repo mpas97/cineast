@@ -90,7 +90,7 @@ public class DatabaseSetupCommand implements Runnable {
 
       for (PersistentOperator r : persistentOperators) {
         System.out.println("Creating entity for " + r.getClass().getSimpleName());
-        r.initalizePersistentLayer(() -> ec);
+        r.initializePersistentLayer(() -> ec);
       }
       System.out.println("...done");
 

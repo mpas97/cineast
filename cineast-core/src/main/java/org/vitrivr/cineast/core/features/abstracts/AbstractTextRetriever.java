@@ -87,7 +87,7 @@ public abstract class AbstractTextRetriever implements Retriever, Extractor {
    * This corresponds to the Fieldnames of the {@link SimpleFulltextFeatureDescriptor} The "feature" in this context is the full text for the given segment
    */
   @Override
-  public void initalizePersistentLayer(Supplier<EntityCreator> supply) {
+  public void initializePersistentLayer(Supplier<EntityCreator> supply) {
     final AttributeDefinition[] fields = new AttributeDefinition[2];
     final Map<String, String> hints = new HashMap<>(1);
     hints.put("handler", "solr");

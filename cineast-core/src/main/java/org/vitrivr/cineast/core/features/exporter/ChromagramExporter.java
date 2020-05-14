@@ -101,7 +101,7 @@ public class ChromagramExporter implements Extractor {
     public void finish() { /* Nothing to finish. */}
 
     @Override
-    public void initalizePersistentLayer(Supplier<EntityCreator> supply) {/* Nothing to initialize. */}
+    public void initializePersistentLayer(Supplier<EntityCreator> supply) {/* Nothing to initialize. */}
 
     @Override
     public void dropPersistentLayer(Supplier<EntityCreator> supply) {/* Nothing to drop. */}

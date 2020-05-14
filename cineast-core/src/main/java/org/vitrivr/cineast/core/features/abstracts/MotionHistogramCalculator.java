@@ -140,7 +140,7 @@ public abstract class MotionHistogramCalculator implements Retriever {
   }
 
   @Override
-  public void initalizePersistentLayer(Supplier<EntityCreator> supply) {
+  public void initializePersistentLayer(Supplier<EntityCreator> supply) {
     supply.get().createFeatureEntity(this.tableName, true, new AttributeDefinition("hist", AttributeType.VECTOR, vectorLength * 8), new AttributeDefinition("sums", AttributeType.VECTOR, vectorLength));
   }
 

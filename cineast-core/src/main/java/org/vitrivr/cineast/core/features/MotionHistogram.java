@@ -50,7 +50,7 @@ public class MotionHistogram extends SubDivMotionHistogram {
 
 
   @Override
-  public void initalizePersistentLayer(Supplier<EntityCreator> supply) {
+  public void initializePersistentLayer(Supplier<EntityCreator> supply) {
     supply.get().createFeatureEntity("features_MotionHistogram", true);
 
   }

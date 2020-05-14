@@ -12,7 +12,7 @@ public interface PersistentOperator {
 	 *
 	 * @param supply
 	 */
-	void initalizePersistentLayer(Supplier<EntityCreator> supply);
+	void initializePersistentLayer(Supplier<EntityCreator> supply);
 
 	/**
 	 *
