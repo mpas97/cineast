@@ -25,7 +25,8 @@ package org.vitrivr.cineast.core.som;
  *
  * */
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 public class SOM {
@@ -412,71 +413,57 @@ public class SOM {
 	 * and satisfies the necessary conditions
 	 * to construct a self-organizing map.
 	 *
-	 * @param input The file object to read in
+	 * @param filename The file object to read in
 	 *
 	 * */
-	private void setupFromFile(File input) throws IOException
+	private void setupFromFile(String filename) throws IOException
 	{
-		// Open a Scanner
-		Scanner inFile;
-		try
-		{
-			inFile = new Scanner(input);
-			inFile.useDelimiter("\n");
-		}
-		catch(IOException ioe)
-		{
-			throw new IOException("Cannot read file. Select a readable file.");
-		}
 
-		// Treat the first line as a header and use it
-		// to determine the number of columns
-		numColumns = 0;
-		String currentLine = inFile.next();
-		Scanner parser = new Scanner(currentLine);
-		parser.useDelimiter(",");
-		while(parser.hasNext())
-		{
-			parser.next();
-			numColumns++;
-		}
-		numColumns--;
-		// There should be at least two columns
-		if(numColumns < 2)
-		{
-			throw new IOException("The file should have at least two columns.");
-		}
-		// Now read the data
+		BufferedReader in = new BufferedReader(new FileReader(filename));
+
 		float[] currentRow;
 		ids = new ArrayList<>();
 		inputData = new ArrayList<>();
-		while(inFile.hasNext())
-		{
-			currentLine = inFile.next();
-			parser = new Scanner(currentLine);
-			parser.useDelimiter(",");
-			try
+		numColumns = 0;
+		String[] values;
+
+		// Treat the first line as a header and use it
+		// to determine the number of columns
+		String str;
+		if ((str = in.readLine())!= null) {
+			values = str.split(",");
+			numColumns = values.length - 1;
+			// There should be at least two columns
+			if(numColumns < 2)
 			{
-				ids.add(parser.next());
-				currentRow = new float[numColumns];
-				// Ignore data in rows with more entries than in the header
-				for(int i = 0; i < numColumns; i++)
+				throw new IOException("The file should have at least two columns.");
+			}
+			do {
+				try
 				{
-					currentRow[i] = Float.parseFloat(parser.next());
+					values = str.split(",");
+					ids.add(values[0]);
+					currentRow = new float[numColumns];
+					// Ignore data in rows with more entries than in the header
+					for(int i = 0; i < numColumns; i++)
+					{
+						currentRow[i] = Float.parseFloat(values[i+1]);
+					}
+					inputData.add(currentRow);
 				}
-				inputData.add(currentRow);
-			}
-			// Ensure the data are parsed to numeric
-			catch(NumberFormatException nfe)
-			{
-				throw new IOException("The file should contain only numeric data.");
-			}
-			// Ensure a non-jagged array
-			catch(NoSuchElementException nsee)
-			{
-				throw new IOException("Every row should contain one number for every columns in the file header.");
-			}
+				// Ensure the data are parsed to numeric
+				catch(NumberFormatException nfe)
+				{
+					throw new IOException("The file should contain only numeric data.");
+				}
+				// Ensure a non-jagged array
+				catch(NoSuchElementException nsee)
+				{
+					throw new IOException("Every row should contain one number for every columns in the file header.");
+				}
+			} while ((str = in.readLine())!= null);
 		}
+		in.close();
 
 		// Ensure # rows >= # cols
 		if (inputData.size() < numColumns) {
@@ -485,13 +472,13 @@ public class SOM {
 	}
 
 	public SOM trainSOM(String filename) throws IOException {
-		setupFromFile(new File(filename));
+		setupFromFile(filename);
 		return getTrainedSom();
 	}
 
 	//TODO use relevance feedback interface
 	public SOM trainSOM(String filename, ArrayList<String> ids, ArrayList<float[]> vectors) throws IOException {
-		setupFromFile(new File(filename));
+		setupFromFile(filename);
 		System.out.println("size: "+this.ids.size()+" "+inputData.size());
 		if (ids.size() != vectors.size() || numColumns!=0 && !vectors.isEmpty() && vectors.get(0).length != numColumns) throw new IOException("Invalid array");
 		this.ids.addAll(ids);
