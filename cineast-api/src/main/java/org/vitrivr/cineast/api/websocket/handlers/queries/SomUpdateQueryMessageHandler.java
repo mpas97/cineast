@@ -41,7 +41,8 @@ public class SomUpdateQueryMessageHandler extends AbstractSomQueryMessageHandler
 
             List<Map<String, PrimitiveTypeProvider>> vectors = retriever.getRows(posIds);
             try {
-                SOM som = SOM.getInstance().trainSOM(".som/shuffled-50k/AverageColor.csv",
+                SOM som = SOM.setInstance(message.getSize(), message.getSize(), 1);
+                som.trainFromArrayOnly(/*".som/shuffled-50k/AverageColor.csv",*/
                         vectors.stream().map(
                                 v -> v.get("id").getString()
                         ).collect(Collectors.toCollection(ArrayList::new)),

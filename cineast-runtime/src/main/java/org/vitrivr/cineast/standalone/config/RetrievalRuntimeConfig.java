@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gnu.trove.map.hash.TObjectDoubleHashMap;
 import org.vitrivr.cineast.core.features.*;
+import org.vitrivr.cineast.core.features.abstracts.AbstractFeatureModule;
 import org.vitrivr.cineast.core.features.exporter.QueryImageExporter;
 import org.vitrivr.cineast.core.features.retriever.Retriever;
 import org.vitrivr.cineast.core.util.ReflectionHelper;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class RetrievalRuntimeConfig {
 	private static final HashMap<String, List<RetrieverConfig>> DEFAULT_RETRIEVER_CATEGORIES = new HashMap<>();
@@ -123,6 +125,17 @@ public final class RetrievalRuntimeConfig {
 		return _return;
 	}
 
+	public List<String> getRetrieverNamesByAbstractFeatureModule(){
+		ArrayList<String> _return = new ArrayList<>();
+		retrieverCategories.forEach((key, list) ->
+			_return.addAll(list.stream()
+					.filter(config -> AbstractFeatureModule.class.isAssignableFrom(config.getRetrieverClass().getSuperclass()))
+					.map(config -> config.getRetrieverClass().getSimpleName())
+					.collect(Collectors.toList())
+			)
+		);
+		return _return;
+	}
 
 	public TObjectDoubleHashMap<Retriever> getRetrieversByCategory(String category){
 		List<RetrieverConfig> list = this.retrieverCategories.get(category);

@@ -7,15 +7,29 @@ import org.vitrivr.cineast.core.config.QueryConfig;
 
 
 public class SomUpdateQuery extends Query {
+    int size;
+    String retriever;
     String[] positives, negatives;
 
     @JsonCreator
-    public SomUpdateQuery(@JsonProperty(value = "positives", required = true) String[] positives,
+    public SomUpdateQuery(@JsonProperty(value = "size", required = true) int size,
+                          @JsonProperty(value = "retriever", required = true) String retriever,
+                          @JsonProperty(value = "positives", required = true) String[] positives,
                           @JsonProperty(value = "negatives", required = true) String[] negatives,
                           @JsonProperty(value = "config", required = true) QueryConfig config) {
         super(config);
+        this.size = size;
+        this.retriever = retriever;
         this.positives = positives;
         this.negatives = negatives;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public String getRetriever() {
+        return retriever;
     }
 
     public String[] getPositives() {

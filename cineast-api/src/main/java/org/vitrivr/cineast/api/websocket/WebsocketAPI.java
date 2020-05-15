@@ -56,6 +56,7 @@ public class WebsocketAPI {
         STATELESS_HANDLERS.put(MessageType.Q_SOM_TRAIN, new SomTrainQueryMessageHandler());
         STATELESS_HANDLERS.put(MessageType.Q_SOM_UPDATE, new SomUpdateQueryMessageHandler());
         STATELESS_HANDLERS.put(MessageType.Q_SOM_CLUSTER, new SomClusterQueryMessageHandler());
+        STATELESS_HANDLERS.put(MessageType.Q_RETRIEVER, new RetrieverQueryMessageHandler());
     }
 
     /* */

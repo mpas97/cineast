@@ -501,8 +501,7 @@ public class SOM {
 	}
 
 	public SOM trainFromArrayOnly(ArrayList<String> ids, ArrayList<float[]> vectors) throws IOException {
-		if (ids.size() != vectors.size() || numColumns!=0 && !vectors.isEmpty() && vectors.get(0).length != numColumns)
-			throw new IOException("Invalid array");
+		if (vectors.isEmpty() || ids.size() != vectors.size()) throw new IOException("Invalid array");
 		this.numColumns = vectors.get(0).length;
 		this.ids = ids;
 		inputData = vectors;

@@ -6,12 +6,19 @@ import org.vitrivr.cineast.api.messages.interfaces.MessageType;
 
 
 public class SomTrainQuery extends Query {
+    String retriever;
     int size;
 
     @JsonCreator
-    public SomTrainQuery(@JsonProperty(value = "size", required = true) int size) {
+    public SomTrainQuery(@JsonProperty(value = "retriever", required = true) String retriever,
+                         @JsonProperty(value = "size", required = true) int size) {
         super(null);
+        this.retriever = retriever;
         this.size = size;
+    }
+
+    public String getRetriever() {
+        return retriever;
     }
 
     public int getSize() {

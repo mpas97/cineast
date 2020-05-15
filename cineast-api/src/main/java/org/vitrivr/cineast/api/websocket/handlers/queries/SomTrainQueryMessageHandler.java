@@ -18,8 +18,10 @@ public class SomTrainQueryMessageHandler extends AbstractSomQueryMessageHandler<
         try {
             SOM som = SOM
                     .setInstance(message.getSize(), message.getSize(), 1)
-                    .trainSOM(".som/shuffled-50k/AverageColor.csv");
+                    .trainSOM(".som/shuffled-50k/"+message.getRetriever()+".csv");
             final List<String> results = Arrays.stream(som.nearestEntryOfNode)
+                    //TODO handle filter, also in update
+                    .filter(i -> i!=-1)
                     .mapToObj(elem -> som.getIds().get(elem))
                     .collect(Collectors.toList());
             this.submitOverviewInfo(session, uuid, results);
