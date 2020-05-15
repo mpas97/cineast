@@ -7,19 +7,21 @@ import org.vitrivr.cineast.core.config.QueryConfig;
 
 
 public class SomUpdateQuery extends Query {
-    int size;
+    int size, deepness;
     String retriever;
     String[] positives, negatives;
 
     @JsonCreator
     public SomUpdateQuery(@JsonProperty(value = "size", required = true) int size,
                           @JsonProperty(value = "retriever", required = true) String retriever,
+                          @JsonProperty(value = "deepness", required = true) int deepness,
                           @JsonProperty(value = "positives", required = true) String[] positives,
                           @JsonProperty(value = "negatives", required = true) String[] negatives,
                           @JsonProperty(value = "config", required = true) QueryConfig config) {
         super(config);
         this.size = size;
         this.retriever = retriever;
+        this.deepness = deepness;
         this.positives = positives;
         this.negatives = negatives;
     }
@@ -30,6 +32,10 @@ public class SomUpdateQuery extends Query {
 
     public String getRetriever() {
         return retriever;
+    }
+
+    public int getDeepness() {
+        return deepness;
     }
 
     public String[] getPositives() {

@@ -18,26 +18,28 @@ public class SomUpdateQueryMessageHandler extends AbstractSomQueryMessageHandler
 
     @Override
     public void execute(Session session, QueryConfig qconf, SomUpdateQuery message) {
-        Optional<Retriever> optional = Config.sharedConfig().getRetriever().getRetrieverByName("AverageColor");
+        Optional<Retriever> optional = Config.sharedConfig().getRetriever().getRetrieverByName(message.getRetriever());
         if (optional.isPresent() && optional.get() instanceof AbstractFeatureModule) {
             AbstractFeatureModule retriever = (AbstractFeatureModule) optional.get();
             retriever.init(Config.sharedConfig().getDatabase().getSelectorSupplier());
+            System.out.println("update using retriever: "+retriever.getClass().getSimpleName());
 
             final String uuid = qconf.getQueryId().toString();
 
-            List<String> posIds = new ArrayList<>();
-            for (String id : message.getPositives()) {
-                posIds.addAll(retriever.getSimilar(id, qconf).stream()
-                        .map(ScoreElement::getId).collect(Collectors.toList()));
-            }
-            List<String> negIds = new ArrayList<>();
-            for (String id : message.getNegatives()) {
-                negIds.addAll(retriever.getSimilar(id, qconf).stream()
-                        .map(ScoreElement::getId).collect(Collectors.toList()));;
-            }
-            posIds = posIds.stream().distinct().collect(Collectors.toList());
-            negIds = negIds.stream().distinct().collect(Collectors.toList());
+            qconf.setResultsPerModule(message.getDeepness()*1000);
+            qconf.setMaxResults(message.getDeepness()*1000);
+            List<String> posIds = retriever.getSimilar(Arrays.asList(message.getPositives()), qconf).stream()
+                    .map(ScoreElement::getId).collect(Collectors.toList());
+            System.out.println("deepness: "+message.getDeepness()+" size batched positive knn: "+posIds.size());
+
+            qconf.setResultsPerModule(1000*message.getNegatives().length);
+            List<String> negIds = retriever.getSimilar(Arrays.asList(message.getNegatives()), qconf).stream()
+                    .map(ScoreElement::getId).collect(Collectors.toList());
+            System.out.println("deepness: "+message.getDeepness()+" size batched negative knn: "+negIds.size());
+
             posIds.removeIf(negIds::contains);
+
+            System.out.println("knn final size: "+posIds.size());
 
             List<Map<String, PrimitiveTypeProvider>> vectors = retriever.getRows(posIds);
             try {
@@ -50,6 +52,7 @@ public class SomUpdateQueryMessageHandler extends AbstractSomQueryMessageHandler
                                 v -> v.get("feature").getFloatArray()
                         ).collect(Collectors.toCollection(ArrayList::new)));
                 final List<String> results = Arrays.stream(som.nearestEntryOfNode)
+                        //TODO handle filter, also in train
                         .filter(i -> i!=-1)
                         .mapToObj(elem -> som.getIds().get(elem))
                         .collect(Collectors.toList());

@@ -21,6 +21,7 @@ public class SomTrainQueryMessageHandler extends AbstractSomQueryMessageHandler<
                     .trainSOM(".som/shuffled-50k/"+message.getRetriever()+".csv");
             final List<String> results = Arrays.stream(som.nearestEntryOfNode)
                     //TODO handle filter, also in update
+                    //perform knns on empty weight vector clusters
                     .filter(i -> i!=-1)
                     .mapToObj(elem -> som.getIds().get(elem))
                     .collect(Collectors.toList());
