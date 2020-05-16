@@ -287,34 +287,20 @@ public class SOM {
 
 		// Adapted from the C code for mapKohonen in the R "kohonen" package
 		// Now calculate the weights/data to map distance
-		count = 0;
-		double [] mapDist = new double[dataRows * weightsRows];
+		double [][] distanceMatrix = new double [dataRows][weightsRows];
 		// Loop over all data points
 		for(int i = 0; i < dataRows; i++)
 		{
 			// Loop over all the map nodes
 			for(int j = 0; j < weightsRows; j++)
 			{
-				mapDist[count] = 0;
+				distanceMatrix[i][j] = 0;
 				// Loop over all the variable
 				for(int k = 0; k < weightsColumns; k++)
 				{
 					tmp = data[i + k * dataRows] - nodes[j + k * weightsRows];
-					mapDist[count] += (tmp * tmp);
+					distanceMatrix[i][j] += (tmp * tmp);
 				}
-				count++;
-			}
-		}
-
-		// Represent the map distances as the original matrix
-		count = 0;
-		double [][] distanceMatrix = new double [dataRows][weightsRows];
-		for(int i = 0; i < dataRows; i++)
-		{
-			for(int j = 0; j < weightsRows; j++)
-			{
-				distanceMatrix[i][j] = mapDist[count];
-				count++;
 			}
 		}
 
