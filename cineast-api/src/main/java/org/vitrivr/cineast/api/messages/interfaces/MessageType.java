@@ -27,7 +27,6 @@ public enum MessageType {
 
   /* SOM */
   Q_SOM_TRAIN(SomTrainQuery.class),
-  Q_SOM_UPDATE(SomUpdateQuery.class),
   Q_SOM_CLUSTER(SomClusterQuery.class),
   Q_RETRIEVER(RetrieverQuery.class),
   QR_RETRIEVER(RetrieverQueryResult.class),
