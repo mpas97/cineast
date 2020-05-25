@@ -293,6 +293,13 @@ public class ADAMproSelector extends AbstractADAMproSelector {
         return resultsToMap(response.getResultsList());
     }
 
+    @Override
+    public List<Map<String, PrimitiveTypeProvider>> getBatchedNearestNeighbourRows(int k, List<float[]> vectors,
+        String column, List<ReadableQueryConfig> configs, String... attributes) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     /**
      * Performs a fulltext search with multiple query terms. The underlying entity is expected to use Apache Solr as storage
      * handler. If it doesn't, this method will fail!

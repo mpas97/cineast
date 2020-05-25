@@ -188,6 +188,13 @@ public class ADAMproStreamingSelector extends AbstractADAMproSelector {
   }
 
   @Override
+  public List<Map<String, PrimitiveTypeProvider>> getBatchedNearestNeighbourRows(int k, List<float[]> vectors,
+    String column, List<ReadableQueryConfig> configs, String... attributes) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
   public List<float[]> getFeatureVectors(String fieldName, PrimitiveTypeProvider value, String vectorName) {
     QueryMessage qbqm = this.mb.buildQueryMessage(ADAMproMessageBuilder.DEFAULT_HINT, this.fromMessage, this.mb.buildBooleanQueryMessage(this.mb.buildWhereMessage(fieldName, value.getString())), null, null);
 
