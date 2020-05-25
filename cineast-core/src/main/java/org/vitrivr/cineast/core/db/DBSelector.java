@@ -77,6 +77,8 @@ public interface DBSelector {
   List<Map<String, PrimitiveTypeProvider>> getBatchedNearestNeighbourRows(int k, List<float[]> vectors,
     String column, List<ReadableQueryConfig> configs, String... attributes);
 
+  List<Map<String, PrimitiveTypeProvider>> getSampleRows(int n, String column);
+
   /**
    * SELECT 'vectorname' from entity where 'fieldname' = 'value'
    */

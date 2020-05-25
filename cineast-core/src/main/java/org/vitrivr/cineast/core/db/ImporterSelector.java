@@ -172,6 +172,12 @@ public abstract class ImporterSelector<T extends Importer<?>> implements DBSelec
   }
 
   @Override
+  public List<Map<String, PrimitiveTypeProvider>> getSampleRows(int n, String column) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
   public List<float[]> getFeatureVectors(String fieldName, PrimitiveTypeProvider value, String vectorName) {
     ArrayList<float[]> _return = new ArrayList<>(1);
 

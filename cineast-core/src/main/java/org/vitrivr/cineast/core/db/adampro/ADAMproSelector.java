@@ -300,6 +300,12 @@ public class ADAMproSelector extends AbstractADAMproSelector {
         return null;
     }
 
+    @Override
+    public List<Map<String, PrimitiveTypeProvider>> getSampleRows(int n, String column) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
     /**
      * Performs a fulltext search with multiple query terms. The underlying entity is expected to use Apache Solr as storage
      * handler. If it doesn't, this method will fail!

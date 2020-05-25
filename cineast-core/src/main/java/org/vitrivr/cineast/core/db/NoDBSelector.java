@@ -42,6 +42,11 @@ public class NoDBSelector implements DBSelector {
     }
 
     @Override
+    public List<Map<String, PrimitiveTypeProvider>> getSampleRows(int n, String column) {
+        return new ArrayList<>(0);
+    }
+
+    @Override
     public List<float[]> getFeatureVectors(String fieldName, String value, String vectorName) {
         return new ArrayList<>(0);
     }

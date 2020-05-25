@@ -108,6 +108,17 @@ public class CottontailSelector implements DBSelector {
   }
 
   @Override
+  public List<Map<String, PrimitiveTypeProvider>> getSampleRows(int n, String column) {
+    List<QueryResponseMessage> results = this.cottontail.query(CottontailGrpc.QueryMessage.newBuilder().setQuery(
+            CottontailGrpc.Query.newBuilder()
+                    .setProjection(CottontailGrpc.Projection.newBuilder().setOp(CottontailGrpc.Projection.Operation.SELECT).putAttributes(column,""))
+                    .setFrom(CottontailGrpc.From.newBuilder().setSample(CottontailGrpc.Sample.newBuilder().setSize(n).setSeed(System.currentTimeMillis()).setEntity(entity)))
+    ).build());
+    return processResults(results);
+  }
+
+
+  @Override
   public List<float[]> getFeatureVectors(String fieldName, PrimitiveTypeProvider value, String vectorName) {
 
     Projection projection = CottontailMessageBuilder.projection(Operation.SELECT, vectorName);

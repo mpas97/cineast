@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.vitrivr.cineast.core.config.QueryConfig;
@@ -125,6 +125,10 @@ public abstract class AbstractFeatureModule implements Extractor, Retriever {
         }
 
         return this.selector.getBatchedNearestNeighbourRows(qc.getResultsPerModule(), list, "feature", list.stream().map(x -> setQueryConfig(qc)).collect(Collectors.toList()), attributes);
+    }
+
+    public List<Map<String, PrimitiveTypeProvider>> getSampleRows(int n, String column) {
+       return this.selector.getSampleRows(n, column);
     }
 
         /**
