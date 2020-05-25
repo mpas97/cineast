@@ -93,13 +93,13 @@ public class CottontailSelector implements DBSelector {
 
   @Override
   public List<Map<String, PrimitiveTypeProvider>> getBatchedNearestNeighbourRows(int limit, List<float[]> vectors, String column, List<ReadableQueryConfig> configs, String... attributes) {
-    System.out.println("we have "+vectors.size()+" vectors, k="+k);
+    System.out.println("we have "+vectors.size()+" vectors, k="+limit/vectors.size());
     Knn knn = CottontailMessageBuilder.batchedKnn(
-              column,
-              vectors,
-              null,
-              k,
-              configs.get(0).getDistance().orElse(Distance.manhattan));
+            column,
+            vectors,
+            null,
+            limit/vectors.size(),
+            configs.get(0).getDistance().orElse(Distance.manhattan));
 
     List<QueryResponseMessage> results =
             this.cottontail.query(CottontailMessageBuilder.queryMessage(CottontailMessageBuilder.query(entity, CottontailMessageBuilder.projection(Operation.SELECT, attributes.length == 0 ? new String[] {"id", column} : attributes), whereInList("id", configs.get(0).getRelevantSegmentIds()), knn, limit), configs.get(0).getQueryId().toString()));
