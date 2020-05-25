@@ -168,29 +168,9 @@ public class SOM {
 		double dist;
 		double tmp;
 
-		// "Unpack" the gridData, weights, and pair distances into a 1D array
-		double [] data = new double[dataRows * dataColumns];
-		double [] nodes = new double[weightsRows * weightsColumns];
+		// "Unpack" the pair distances into a 1D array
 		double [] distPairs = new double[this.pairArray.length * this.pairArray.length];
 		int count = 0;
-		for(int i = 0; i < dataColumns; i++)
-		{
-			for(int j = 0; j < dataRows; j++)
-			{
-				data[count] = grid.gridData[j][i];
-				count++;
-			}
-		}
-		count = 0;
-		for(int i = 0; i < weightsColumns; i++)
-		{
-			for(int j = 0; j < weightsRows; j++)
-			{
-				nodes[count] = this.weights[j][i];
-				count++;
-			}
-		}
-		count = 0;
 		int currentX;
 		int currentY;
 		double xDist;
@@ -247,7 +227,7 @@ public class SOM {
 				{
 					// For the current random observation and the current column,
 					// find the difference
-					tmp = data[currentObs + k * dataRows] - nodes[j + k * weightsRows];
+					tmp = grid.gridData[currentObs][k] - weights[j][k];
 					// dist^2 is the square of the sums of
 					// all the individual components, and
 					// minimizing distance^2 leads to the same
@@ -296,28 +276,9 @@ public class SOM {
 					// Apply to all columns in this row
 					for(int m = 0; m < dataColumns; m++)
 					{
-						tmp = data[currentObs + m * dataRows] - nodes[l + m * weightsRows];
-						nodes[l + m * weightsRows] += (tmp * learningRate);
+						tmp = grid.gridData[currentObs][m] - weights[l][m];
+						weights[l][m] += (tmp * learningRate);
 					}
-				}
-			}
-		}
-
-		// Adapted from the C code for mapKohonen in the R "kohonen" package
-		// Now calculate the weights/data to map distance
-		double [][] distanceMatrix = new double [dataRows][weightsRows];
-		// Loop over all data points
-		for(int i = 0; i < dataRows; i++)
-		{
-			// Loop over all the map nodes
-			for(int j = 0; j < weightsRows; j++)
-			{
-				distanceMatrix[i][j] = 0;
-				// Loop over all the variable
-				for(int k = 0; k < weightsColumns; k++)
-				{
-					tmp = data[i + k * dataRows] - nodes[j + k * weightsRows];
-					distanceMatrix[i][j] += (tmp * tmp);
 				}
 			}
 		}
@@ -329,25 +290,33 @@ public class SOM {
 		nearestEntryOfNode = new int[weightsRows];
 		Arrays.fill(nearestEntryOfNode, -1);
 
-		int nodeIndex;
 		double minDistance;
-		for(int i = 0; i < distanceMatrix.length; i++)
+
+		// Adapted from the C code for mapKohonen in the R "kohonen" package
+		// Now calculate the weights/data to map distance
+		double [][] distanceMatrix = new double [dataRows][weightsRows];
+		// Loop over all data points
+		for(int i = 0; i < dataRows; i++)
 		{
-			count = 0;
-			nodeIndex = count;
 			minDistance = Double.MAX_VALUE;
+			// Loop over all the map nodes
 			for(int j = 0; j < weightsRows; j++)
 			{
+				distanceMatrix[i][j] = 0;
+				// Loop over all the variable
+				for(int k = 0; k < weightsColumns && distanceMatrix[i][j] < minDistance; k++)
+				{
+					tmp = grid.gridData[i][k] - weights[j][k];
+					distanceMatrix[i][j] += (tmp * tmp);
+				}
 				if(distanceMatrix[i][j] < minDistance)
 				{
 					minDistance = distanceMatrix[i][j];
-					nodeIndex = count;
+					finalNodes[i] = j;
 				}
-				count++;
 			}
-			finalNodes[i] = nodeIndex;
 			finalDistances[i] = minDistance;
-			if (nearestEntryOfNode[nodeIndex] == -1 || minDistance < finalDistances[nearestEntryOfNode[nodeIndex]]) nearestEntryOfNode[nodeIndex] = i;
+			if (nearestEntryOfNode[finalNodes[i]] == -1 || minDistance < finalDistances[nearestEntryOfNode[finalNodes[i]]]) nearestEntryOfNode[finalNodes[i]] = i;
 		}
 	}
 
