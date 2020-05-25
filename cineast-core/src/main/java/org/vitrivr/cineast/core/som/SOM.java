@@ -53,17 +53,35 @@ public class SOM {
 	private ArrayList<float[]> inputData;
 	private Grid grid;
 
-	private static SOM som;
+	private static final HashMap<String, LinkedHashMap<String, List<String>>> results = new HashMap<>();
 
-	public static SOM getInstance() {
-		return som;
+	public static LinkedHashMap<String, List<String>> getResult(String id) {
+		return results.get(id);
 	}
 
-	public static SOM setInstance(int xDim, int yDim, int epochs){
-		return som = new SOM(xDim, yDim, epochs);
+	public static void setResult(String id, LinkedHashMap<String, List<String>> data) {
+		results.put(id, data);
 	}
 
-	private SOM(int xDim, int yDim, int epochs)
+	private LinkedHashMap<String, List<String>> buildResult() {
+		LinkedHashMap<String, List<String>> clusters = new LinkedHashMap<>();
+		ArrayList<String>[] nodes = (ArrayList<String>[]) new ArrayList[xDim*yDim];
+
+		for (int i = 0; i < getNodes().length; i++) {
+			if (nodes[getNodes()[i]] == null) {
+				nodes[getNodes()[i]] = new ArrayList<>();
+			}
+			nodes[getNodes()[i]].add(getIds().get(i));
+		}
+		for (int i = 0; i < xDim*yDim; i++) {
+			if (nearestEntryOfNode[i] != -1) {
+				clusters.put(getIds().get(nearestEntryOfNode[i]), nodes[i]);
+			}
+		}
+		return clusters;
+	}
+
+	public SOM(int xDim, int yDim, int epochs)
 	{
 		// Only allow positive xDim and yDim
 		if(xDim <= 0 || yDim <= 0)
@@ -457,13 +475,18 @@ public class SOM {
 		}
 	}
 
-	public SOM trainSOM(String filename) throws IOException {
-		setupFromFile(filename);
-		return getTrainedSom();
+	public LinkedHashMap<String, List<String>> trainSOM(String filename) {
+		try {
+			setupFromFile(filename);
+			return getTrainedSom();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return new LinkedHashMap<>();
 	}
 
 	//TODO use relevance feedback interface
-	public SOM trainSOM(String filename, ArrayList<String> ids, ArrayList<float[]> vectors) throws IOException {
+	public LinkedHashMap<String, List<String>> trainSOM(String filename, ArrayList<String> ids, ArrayList<float[]> vectors) throws IOException {
 		setupFromFile(filename);
 		System.out.println("size: "+this.ids.size()+" "+inputData.size());
 		if (ids.size() != vectors.size() || numColumns!=0 && !vectors.isEmpty() && vectors.get(0).length != numColumns) throw new IOException("Invalid array");
@@ -473,15 +496,19 @@ public class SOM {
 		return getTrainedSom();
 	}
 
-	public SOM trainFromArrayOnly(ArrayList<String> ids, ArrayList<float[]> vectors) throws IOException {
-		if (vectors.isEmpty() || ids.size() != vectors.size()) throw new IOException("Invalid array");
-		this.numColumns = vectors.get(0).length;
-		this.ids = ids;
-		inputData = vectors;
-		return getTrainedSom();
+	public LinkedHashMap<String, List<String>> trainFromArrayOnly(ArrayList<String> ids, ArrayList<float[]> vectors) {
+		if (vectors.isEmpty() || ids.size() != vectors.size()) {
+			System.out.println("Invalid array");
+			return new LinkedHashMap<>();
+		} else {
+			this.numColumns = vectors.get(0).length;
+			this.ids = ids;
+			inputData = vectors;
+			return getTrainedSom();
+		}
 	}
 
-	private SOM getTrainedSom() {
+	private LinkedHashMap<String, List<String>> getTrainedSom() {
 		double[][] validData = new double[inputData.size()][numColumns];
 		float[] tmpArray;
 		for(int i = 0; i < inputData.size(); i++)
@@ -506,7 +533,7 @@ public class SOM {
 		System.out.println("training time: " + (endTime - startTime) / 1000000000 + "s");
 		//metric();
 
-		return this;
+		return buildResult();
 	}
 
 	public void metric() {

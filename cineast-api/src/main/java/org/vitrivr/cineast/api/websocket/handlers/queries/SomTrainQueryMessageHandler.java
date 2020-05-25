@@ -19,63 +19,42 @@ public class SomTrainQueryMessageHandler extends AbstractSomQueryMessageHandler<
     @Override
     public void execute(Session session, QueryConfig qconf, SomTrainQuery message) {
         final String uuid = qconf.getQueryId().toString();
-        if (message.getDeepness()==-1) {
-            try {
-                SOM som = SOM
-                        .setInstance(message.getSize(), message.getSize(), 1)
-                        .trainSOM(".som/shuffled-50k/"+message.getRetriever()+".csv");
-                final List<String> results = Arrays.stream(som.nearestEntryOfNode)
-                        //TODO handle filter, also in update
-                        //perform knns on empty weight vector clusters
-                        .filter(i -> i!=-1)
-                        .mapToObj(elem -> som.getIds().get(elem))
-                        .collect(Collectors.toList());
-                this.submitOverviewInfo(session, uuid, results);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return;
-        }
-        Optional<Retriever> optional = Config.sharedConfig().getRetriever().getRetrieverByName(message.getRetriever());
-        if (optional.isPresent() && optional.get() instanceof AbstractFeatureModule) {
-            AbstractFeatureModule retriever = (AbstractFeatureModule) optional.get();
-            retriever.init(Config.sharedConfig().getDatabase().getSelectorSupplier());
-            System.out.println("update using retriever: "+retriever.getClass().getSimpleName());
+        SOM som = new SOM(message.getSize(), message.getSize(), 1);
+        if (message.getDeepness() == -1) {
+            SOM.setResult(uuid, som.trainSOM(".som/shuffled-50k/"+message.getRetriever()+".csv"));
+        } else {
+            Optional<Retriever> optional = Config.sharedConfig().getRetriever().getRetrieverByName(message.getRetriever());
+            if (optional.isPresent() && optional.get() instanceof AbstractFeatureModule) {
+                AbstractFeatureModule retriever = (AbstractFeatureModule) optional.get();
+                retriever.init(Config.sharedConfig().getDatabase().getSelectorSupplier());
+                System.out.println("update using retriever: " + retriever.getClass().getSimpleName());
 
-            qconf.setResultsPerModule(message.getDeepness()*1000);
-            qconf.setMaxResults(message.getDeepness()*1000);
-            List<String> posIds = retriever.getSimilar(Arrays.asList(message.getPositives()), qconf).stream()
-                    .map(ScoreElement::getId).collect(Collectors.toList());
-            System.out.println("deepness: "+message.getDeepness()+" size batched positive knn: "+posIds.size());
+                qconf.setResultsPerModule(message.getDeepness() * 1000);
+                qconf.setMaxResults(message.getDeepness() * 1000);
+                List<String> posIds = retriever.getSimilar(Arrays.asList(message.getPositives()), qconf).stream()
+                        .map(ScoreElement::getId).collect(Collectors.toList());
+                System.out.println("deepness: " + message.getDeepness() + " size batched positive knn: " + posIds.size());
 
-            qconf.setResultsPerModule(1000*message.getNegatives().length);
-            List<String> negIds = retriever.getSimilar(Arrays.asList(message.getNegatives()), qconf).stream()
-                    .map(ScoreElement::getId).collect(Collectors.toList());
-            System.out.println("size batched negative knn: "+negIds.size());
+                qconf.setResultsPerModule(1000 * message.getNegatives().length);
+                List<String> negIds = retriever.getSimilar(Arrays.asList(message.getNegatives()), qconf).stream()
+                        .map(ScoreElement::getId).collect(Collectors.toList());
+                System.out.println("size batched negative knn: " + negIds.size());
 
-            posIds.removeAll(negIds);
+                posIds.removeAll(negIds);
 
-            System.out.println("knn final size: "+posIds.size());
+                System.out.println("knn final size: " + posIds.size());
 
-            List<Map<String, PrimitiveTypeProvider>> vectors = retriever.getRows(posIds);
-            try {
-                SOM som = SOM.setInstance(message.getSize(), message.getSize(), 1);
-                som.trainFromArrayOnly(/*".som/shuffled-50k/AverageColor.csv",*/
-                        vectors.stream().map(
-                                v -> v.get("id").getString()
-                        ).collect(Collectors.toCollection(ArrayList::new)),
-                        vectors.stream().map(
-                                v -> v.get("feature").getFloatArray()
-                        ).collect(Collectors.toCollection(ArrayList::new)));
-                final List<String> results = Arrays.stream(som.nearestEntryOfNode)
-                        //TODO handle filter, also in train
-                        .filter(i -> i!=-1)
-                        .mapToObj(elem -> som.getIds().get(elem))
-                        .collect(Collectors.toList());
-                this.submitOverviewInfo(session, uuid, results);
-            } catch (IOException e) {
-                e.printStackTrace();
+                List<Map<String, PrimitiveTypeProvider>> vectors = retriever.getRows(posIds);
+                SOM.setResult(uuid, som.trainFromArrayOnly(
+                    vectors.stream().map(
+                            v -> v.get("id").getString()
+                    ).collect(Collectors.toCollection(ArrayList::new)),
+                    vectors.stream().map(
+                            v -> v.get("feature").getFloatArray()
+                    ).collect(Collectors.toCollection(ArrayList::new))
+                ));
             }
         }
+        this.submitOverviewInfo(session, uuid, new ArrayList<>(SOM.getResult(uuid).keySet()));
     }
 }
