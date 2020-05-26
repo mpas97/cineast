@@ -31,14 +31,14 @@ public class SomTrainQueryMessageHandler extends AbstractSomQueryMessageHandler<
             } else {
                 qconf.setResultsPerModule(message.getDeepness() * 1000);
                 qconf.setMaxResults(message.getDeepness() * 1000);
-                List<Map<String, PrimitiveTypeProvider>> positives = retriever.getBatchedNearestNeighbourRows(Arrays.asList(message.getPositives()), qconf);
+                List<Map<String, PrimitiveTypeProvider>> positives = retriever.getBatchedNearestNeighbourRows(message.getPositives(), qconf);
                 System.out.println("deepness: " + message.getDeepness() + " size positive knn: " + positives.size());
 
-                qconf.setResultsPerModule(1000 * message.getNegatives().length);
-                qconf.setMaxResults(1000 * message.getNegatives().length);
-                HashSet<String> neq_lookup = retriever.getBatchedNearestNeighbourRows(Arrays.asList(message.getNegatives()), qconf, "id")
+                qconf.setResultsPerModule(1000 * message.getNegatives().size());
+                qconf.setMaxResults(1000 * message.getNegatives().size());
+                HashSet<String> neq_lookup = retriever.getBatchedNearestNeighbourRows(message.getNegatives(), qconf, "id")
                         .stream().map(e -> e.get("id").toString()).collect(Collectors.toCollection(HashSet::new));
-                neq_lookup.addAll(Arrays.asList(message.getNegatives()));
+                neq_lookup.addAll(message.getNegatives());
                 System.out.println("size negative knn: " + neq_lookup.size());
 
                 // split up query result items by id and feature
