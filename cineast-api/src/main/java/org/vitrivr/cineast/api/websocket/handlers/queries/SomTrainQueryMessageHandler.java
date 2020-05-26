@@ -29,6 +29,7 @@ public class SomTrainQueryMessageHandler extends AbstractSomQueryMessageHandler<
                         sampleRows.stream().map(e -> e.get("feature").getFloatArray()).collect(Collectors.toCollection(ArrayList::new))
                 ));
             } else {
+                qconf = new QueryConfig(qconf);
                 qconf.setResultsPerModule(message.getDeepness() * 1000);
                 qconf.setMaxResults(message.getDeepness() * 1000);
                 List<Map<String, PrimitiveTypeProvider>> positives = retriever.getBatchedNearestNeighbourRows(message.getPositives(), qconf);
