@@ -7,16 +7,23 @@ import org.vitrivr.cineast.core.config.QueryConfig;
 
 public class SomClusterQuery extends Query {
     String[] requestedClusterIds;
+    int offset;
 
     @JsonCreator
     public SomClusterQuery(@JsonProperty(value = "cids", required = true) String[] requestedClusterIds,
+                           @JsonProperty(value = "offset", required = true) int offset,
                            @JsonProperty(value = "config", required = true) QueryConfig config) {
         super(config);
         this.requestedClusterIds = requestedClusterIds;
+        this.offset = offset;
     }
 
     public String[] getRequestedClusterIds() {
         return requestedClusterIds;
+    }
+
+    public int getOffset() {
+        return offset;
     }
 
     /**

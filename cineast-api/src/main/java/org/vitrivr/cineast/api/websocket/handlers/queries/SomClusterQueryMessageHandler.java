@@ -13,7 +13,19 @@ public class SomClusterQueryMessageHandler extends AbstractSomQueryMessageHandle
     public void execute(Session session, QueryConfig qconf, SomClusterQuery message) {
         final String uuid = qconf.getQueryId().toString();
         if (message.getRequestedClusterIds().length == 1) {
-            this.submitClusterInfo(session, uuid, SOM.getResult(uuid).get(message.getRequestedClusterIds()[0]));
+            if (message.getOffset() == 0) {
+                this.submitClusterInfo(session, uuid, SOM.getResult(uuid).get(message.getRequestedClusterIds()[0]));
+            } else {
+                String[] keys = SOM.getResult(uuid).keySet().toArray(new String[0]);
+                for (int i = 0; i < keys.length; i++) {
+                    if (keys[i].equals(message.getRequestedClusterIds()[0])) {
+                        int desiredIndex = (i+message.getOffset())%keys.length;
+                        if (desiredIndex < 0) desiredIndex = keys.length + desiredIndex;
+                        this.submitClusterInfo(session, uuid, SOM.getResult(uuid).get(keys[desiredIndex]));
+                        break;
+                    }
+                }
+            }
         } else {
             List<String> items = new ArrayList<>();
             for (String cluster : message.getRequestedClusterIds()) {
