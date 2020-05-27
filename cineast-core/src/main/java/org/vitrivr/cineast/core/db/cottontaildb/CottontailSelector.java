@@ -92,18 +92,17 @@ public class CottontailSelector implements DBSelector {
   }
 
   @Override
-  public List<Map<String, PrimitiveTypeProvider>> getBatchedNearestNeighbourRows(int limit, List<float[]> vectors, String column, List<ReadableQueryConfig> configs, String... attributes) {
-    System.out.println("we have "+vectors.size()+" vectors, k="+limit/vectors.size());
+  public List<Map<String, PrimitiveTypeProvider>> getBatchedNearestNeighbourRows(int k, List<float[]> vectors, String column, List<ReadableQueryConfig> configs, String... attributes) {
+    System.out.println("we have "+vectors.size()+" vectors, k="+k);
     Knn knn = CottontailMessageBuilder.batchedKnn(
             column,
             vectors,
             null,
-            limit/vectors.size(),
+            k,
             configs.get(0).getDistance().orElse(Distance.manhattan));
 
     List<QueryResponseMessage> results =
-            this.cottontail.query(CottontailMessageBuilder.queryMessage(CottontailMessageBuilder.query(entity, CottontailMessageBuilder.projection(Operation.SELECT, attributes.length == 0 ? new String[] {"id", column} : attributes), whereInList("id", configs.get(0).getRelevantSegmentIds()), knn, limit), configs.get(0).getQueryId().toString()));
-
+            this.cottontail.query(CottontailMessageBuilder.queryMessage(CottontailMessageBuilder.query(entity, CottontailMessageBuilder.projection(Operation.SELECT_DISTINCT, attributes.length == 0 ? new String[] {"*"} : attributes), whereInList("id", configs.get(0).getRelevantSegmentIds()), knn, null), configs.get(0).getQueryId().toString()));
     return processResults(results);
   }
 

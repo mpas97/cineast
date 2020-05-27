@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 
 public class SomTrainQueryMessageHandler extends AbstractSomQueryMessageHandler<SomTrainQuery> {
 
+    public static final int DEFAULT_RANGE = 1000;
+
     @Override
     public void execute(Session session, QueryConfig qconf, SomTrainQuery message) {
         final String uuid = qconf.getQueryId().toString();
@@ -24,32 +26,34 @@ public class SomTrainQueryMessageHandler extends AbstractSomQueryMessageHandler<
             SOM som = new SOM(message.getSize(), message.getSize(), 2);
             if (message.getDeepness() == -1) {
                 List<Map<String, PrimitiveTypeProvider>> sampleRows = retriever.getSampleRows(50000, "*");
+                System.out.println("sample size: "+sampleRows.size());
                 SOM.setResult(uuid, som.trainFromArrayOnly(
                         sampleRows.stream().map(e -> e.get("id").getString()).collect(Collectors.toCollection(ArrayList::new)),
                         sampleRows.stream().map(e -> e.get("feature").getFloatArray()).collect(Collectors.toCollection(ArrayList::new))
                 ));
             } else {
+                // recreate qconf to omit config constraints
                 qconf = new QueryConfig(qconf);
-                qconf.setResultsPerModule(message.getDeepness() * 1000);
-                qconf.setMaxResults(message.getDeepness() * 1000);
-                List<Map<String, PrimitiveTypeProvider>> positives = retriever.getBatchedNearestNeighbourRows(message.getPositives(), qconf);
-                System.out.println("deepness: " + message.getDeepness() + " size positive knn: " + positives.size());
 
-                qconf.setResultsPerModule(1000 * message.getNegatives().size());
-                qconf.setMaxResults(1000 * message.getNegatives().size());
+                qconf.setResultsPerModule(message.getDeepness() * DEFAULT_RANGE / message.getPositives().size());
+                qconf.setMaxResults(message.getDeepness() * DEFAULT_RANGE / message.getPositives().size());
+                List<Map<String, PrimitiveTypeProvider>> positives = retriever.getBatchedNearestNeighbourRows(message.getPositives(), qconf, "id", "feature");
+                System.out.println("knn positive size: " + positives.size());
+
+                qconf.setResultsPerModule(DEFAULT_RANGE);
+                qconf.setMaxResults(DEFAULT_RANGE);
                 HashSet<String> neq_lookup = retriever.getBatchedNearestNeighbourRows(message.getNegatives(), qconf, "id")
                         .stream().map(e -> e.get("id").toString()).collect(Collectors.toCollection(HashSet::new));
                 neq_lookup.addAll(message.getNegatives());
-                System.out.println("size negative knn: " + neq_lookup.size());
+                System.out.println("knn negative size: " + neq_lookup.size());
 
                 // split up query result items by id and feature
-                // avoid duplicate (batched knn can return same neighbors arbitrary often) or negative segments by using hashsets
+                // avoid negative segments by using hashsets
                 ArrayList<String> ids = new ArrayList<>(positives.size());
                 ArrayList<float[]> vectors = new ArrayList<>(positives.size());
-                HashSet<String> ids_lookup = new HashSet<>(positives.size());
                 positives.forEach(e -> {
                     String id = e.get("id").getString();
-                    if (ids_lookup.add(id) && !neq_lookup.contains(id)) {
+                    if (!neq_lookup.contains(id)) {
                         ids.add(id);
                         vectors.add(e.get("feature").getFloatArray());
                     }
