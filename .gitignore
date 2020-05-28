@@ -60,7 +60,5 @@ index*
 *.surfcb
 *.pb
 
-/.som/*/*.csv
-
 ##macOS
 .DS_Store
