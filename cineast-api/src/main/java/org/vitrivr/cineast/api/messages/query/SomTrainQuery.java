@@ -10,19 +10,21 @@ import java.util.List;
 
 public class SomTrainQuery extends Query {
     int size, deepness;
-    String retriever;
+    String retrieverKnn, retrieverSom;
     List<String> positives, negatives;
 
     @JsonCreator
     public SomTrainQuery(@JsonProperty(value = "size", required = true) int size,
-                         @JsonProperty(value = "retriever", required = true) String retriever,
+                         @JsonProperty(value = "retriever_knn", required = true) String retriever_knn,
+                         @JsonProperty(value = "retriever_som", required = true) String retriever_som,
                          @JsonProperty(value = "deepness", required = true) int deepness,
                          @JsonProperty(value = "positives", required = true) List<String> positives,
                          @JsonProperty(value = "negatives", required = true) List<String> negatives,
                          @JsonProperty(value = "config", required = true) QueryConfig config) {
         super(config);
         this.size = size;
-        this.retriever = retriever;
+        this.retrieverKnn = retriever_knn;
+        this.retrieverSom = retriever_som;
         this.deepness = deepness;
         this.positives = positives;
         this.negatives = negatives;
@@ -32,8 +34,12 @@ public class SomTrainQuery extends Query {
         return size;
     }
 
-    public String getRetriever() {
-        return retriever;
+    public String getRetrieverKnn() {
+        return retrieverKnn;
+    }
+
+    public String getRetrieverSom() {
+        return retrieverSom;
     }
 
     public int getDeepness() {
