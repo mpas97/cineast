@@ -54,8 +54,7 @@ public class SomTrainQueryMessageHandler extends AbstractSomQueryMessageHandler<
                     qconf.setResultsPerModule(DEFAULT_RANGE);
                     qconf.setMaxResults(DEFAULT_RANGE);
                     HashSet<String> neq_lookup = retrieverKnn.getBatchedNearestNeighbourRows(message.getNegatives(), qconf, "id")
-                            .stream().map(e -> e.get("id").toString()).collect(Collectors.toCollection(HashSet::new));
-                    neq_lookup.addAll(message.getNegatives());
+                            .stream().map(e -> e.get("id").getString()).collect(Collectors.toCollection(HashSet::new));
                     System.out.println("knn negative size: " + neq_lookup.size());
 
                     // split up query result items by id and feature
