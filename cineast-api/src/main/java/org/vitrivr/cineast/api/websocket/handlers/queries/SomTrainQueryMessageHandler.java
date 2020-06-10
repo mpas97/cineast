@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class SomTrainQueryMessageHandler extends AbstractSomQueryMessageHandler<SomTrainQuery> {
 
     public static final int DEFAULT_RANGE = 1000;
+    public static final String OBJ_SEG = "_[0-9]+$";
 
     @Override
     public void execute(Session session, QueryConfig qconf, SomTrainQuery message) {
@@ -61,9 +62,10 @@ public class SomTrainQueryMessageHandler extends AbstractSomQueryMessageHandler<
                     // avoid negative segments by using hashsets
                     ArrayList<String> ids = new ArrayList<>(positives.size());
                     ArrayList<float[]> vectors = new ArrayList<>(positives.size());
+                    HashSet<String> blacklist = message.getBlacklist().stream().map(e -> e.split(OBJ_SEG)[0]).collect(Collectors.toCollection(HashSet::new));
                     positives.forEach(e -> {
                         String id = e.get("id").getString();
-                        if (!neq_lookup.contains(id)) {
+                        if (!blacklist.contains(id.split(OBJ_SEG)[0]) && !neq_lookup.contains(id)) {
                             ids.add(id);
                             vectors.add(e.get("feature").getFloatArray());
                         }
