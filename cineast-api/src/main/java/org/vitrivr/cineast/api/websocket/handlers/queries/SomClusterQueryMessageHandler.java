@@ -10,7 +10,7 @@ import java.util.*;
 public class SomClusterQueryMessageHandler extends AbstractSomQueryMessageHandler<SomClusterQuery> {
 
     @Override
-    public void execute(Session session, QueryConfig qconf, SomClusterQuery message) {
+    protected void execute(Session session, QueryConfig qconf, SomClusterQuery message, Set<String> segmentIdsForWhichMetadataIsFetched, Set<String> objectIdsForWhichMetadataIsFetched) throws Exception {
         final String uuid = qconf.getQueryId().toString();
         if (message.getRequestedClusterIds().length == 1) {
             if (message.getOffset() == 0) {

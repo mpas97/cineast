@@ -18,7 +18,7 @@ public class SomTrainQueryMessageHandler extends AbstractSomQueryMessageHandler<
     public static final String OBJ_SEG = "_[0-9]+$";
 
     @Override
-    public void execute(Session session, QueryConfig qconf, SomTrainQuery message) {
+    protected void execute(Session session, QueryConfig qconf, SomTrainQuery message, Set<String> segmentIdsForWhichMetadataIsFetched, Set<String> objectIdsForWhichMetadataIsFetched) throws Exception {
         final String uuid = qconf.getQueryId().toString();
         Optional<Retriever> optSom = Config.sharedConfig().getRetriever().getRetrieverByName(message.getRetrieverSom());
         if (optSom.isPresent() && optSom.get() instanceof AbstractFeatureModule) {

@@ -10,6 +10,7 @@ import org.vitrivr.cineast.core.data.StringDoublePair;
 import org.vitrivr.cineast.core.data.entities.MediaObjectDescriptor;
 import org.vitrivr.cineast.core.data.entities.MediaSegmentDescriptor;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,8 +39,8 @@ public abstract class AbstractSomQueryMessageHandler<T extends Query> extends Ab
         this.write(session, new SimilarityQueryResult(queryId, "som", 0, results));
 
         /* Load and transmit segment & object metadata. */
-        this.loadAndWriteSegmentMetadata(session, queryId, segmentIds);
-        this.loadAndWriteObjectMetadata(session, queryId, objectIds);
+        this.loadAndWriteSegmentMetadata(session, queryId, segmentIds, new HashSet<>());
+        this.loadAndWriteObjectMetadata(session, queryId, objectIds, new HashSet<>());
     }
 
     protected void submitClusterInfo(Session session, String queryId, List<String> raw) {
@@ -62,8 +63,8 @@ public abstract class AbstractSomQueryMessageHandler<T extends Query> extends Ab
             this.write(session, new MediaSegmentQueryResult(queryId, segments, SEGMENT_TYPE.SOM_CLUSTER));
 
             /* Load and transmit segment & object metadata. */
-            this.loadAndWriteSegmentMetadata(session, queryId, segmentIds);
-            this.loadAndWriteObjectMetadata(session, queryId, objectIds);
+            this.loadAndWriteSegmentMetadata(session, queryId, segmentIds, new HashSet<>());
+            this.loadAndWriteObjectMetadata(session, queryId, objectIds, new HashSet<>());
         }
     }
 }

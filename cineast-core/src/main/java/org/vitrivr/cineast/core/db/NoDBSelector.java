@@ -36,7 +36,6 @@ public class NoDBSelector implements DBSelector {
     }
 
     @Override
-    public List<float[]> getFeatureVectors(String fieldName, PrimitiveTypeProvider value, String vectorName) {
     public List<Map<String, PrimitiveTypeProvider>> getBatchedNearestNeighbourRows(int k, List<float[]> vectors, String column, List<ReadableQueryConfig> configs, String... attributes) {
         return new ArrayList<>(0);
     }
@@ -47,7 +46,7 @@ public class NoDBSelector implements DBSelector {
     }
 
     @Override
-    public List<float[]> getFeatureVectors(String fieldName, String value, String vectorName) {
+    public List<float[]> getFeatureVectors(String fieldName, PrimitiveTypeProvider value, String vectorName) {
         return new ArrayList<>(0);
     }
 

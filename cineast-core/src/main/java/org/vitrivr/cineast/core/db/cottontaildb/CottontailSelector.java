@@ -20,6 +20,7 @@ import org.vitrivr.cineast.core.data.distance.DistanceElement;
 import org.vitrivr.cineast.core.data.providers.primitive.PrimitiveTypeProvider;
 import org.vitrivr.cineast.core.db.DBSelector;
 import org.vitrivr.cineast.core.db.RelationalOperator;
+import org.vitrivr.cottontail.grpc.CottontailGrpc;
 import org.vitrivr.cottontail.grpc.CottontailGrpc.CompoundBooleanPredicate.Operator;
 import org.vitrivr.cottontail.grpc.CottontailGrpc.Data;
 import org.vitrivr.cottontail.grpc.CottontailGrpc.Entity;
