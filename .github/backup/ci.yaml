@@ -29,6 +29,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64
           push: true
+	#todo add https://github.com/marketplace/actions/generate-smart-tag-for-docker-images
           #tags: cineast/app:latest
           tags: mpas/cineast:latest
       -
