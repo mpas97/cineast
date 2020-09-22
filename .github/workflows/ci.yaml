@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
+        name: print credentials
+        run: echo ${{ secrets.DOCKERHUB_USERNAME }}
+      -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       -
