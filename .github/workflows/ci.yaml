@@ -5,7 +5,7 @@ on:
     types: [published]
 
 jobs:
-  main:
+  path-context:
     runs-on: ubuntu-latest
     steps:
       -
