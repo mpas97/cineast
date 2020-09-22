@@ -19,4 +19,6 @@ jobs:
           repository: mpas/cineast
           tags: latest
           tag_with_ref: true
+      - name: Build fat jar
+        run: ./gradlew fatJar
 
