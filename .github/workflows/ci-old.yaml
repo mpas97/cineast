@@ -24,6 +24,7 @@ jobs:
           docker pull mpas/cineast:latest
           docker create --name cineast mpas/cineast
           docker cp cineast:/opt/cineast/cineast-cli.jar .
+          docker cp cineast:/opt/cineast/cineast-api.jar .
           docker container prune -f
       #- name: Upload jar
       #  uses: actions/upload-artifact@v2
